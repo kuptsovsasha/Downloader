@@ -1,4 +1,5 @@
 import os
+import socket
 import time
 
 import ping3 as ping3
@@ -21,6 +22,9 @@ def download_file():
 
         # Measure the network latency to the file host before the download
         host = requests.utils.urlparse(file_link).hostname
+        # Get the IP address of the hostname
+        ip_address = socket.gethostbyname(host)
+
         pre_latency = ping3.ping(host, unit="ms")
 
         # Download the file and measure the time taken
@@ -46,7 +50,8 @@ def download_file():
         # Return the download time in a JSON response
         return jsonify({'download_time': f'{download_time} sec.',
                         'avg_latency': f'{avg_latency} ms.',
-                        'ttfb': f'{round(ttfb, 3)} sec.'})
+                        'ttfb': f'{round(ttfb, 3)} sec.',
+                        'file_ip': ip_address})
 
     except (requests.exceptions.RequestException, ping3.exceptions.PingError) as e:
         # Return an error response if there's an exception during the download or network measurement
