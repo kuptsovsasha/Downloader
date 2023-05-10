@@ -13,7 +13,7 @@ class Downloader:
     def get_download_info(self):
         return self.__start_downloading()
 
-    def __start_downloading(self) -> dict:
+    def __start_downloading(self, max_speed: int = 100) -> dict:
         try:
             # Measure the network latency to the file host before the download
             host = requests.utils.urlparse(self.file_link).hostname
@@ -26,9 +26,14 @@ class Downloader:
             start_time = time.time()
             response = requests.get(self.file_link, stream=True)
             file_name = f"download_file_{time.strftime('%Y-%m-%d_%H:%M:%S')}"
+
+            max_speed_in_bytes = max_speed * 125829
+            chunk_size = 8192
+            delay = chunk_size / max_speed_in_bytes
             with open(file_name, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
+                for chunk in response.iter_content(chunk_size=chunk_size):
                     f.write(chunk)
+                    time.sleep(delay)
             download_time = round(time.time() - start_time, 3)
 
             # Measure the network latency to the file host after the download
