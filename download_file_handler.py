@@ -49,7 +49,7 @@ class Downloader:
             os.remove(file_name)
 
             # Return the download time in a JSON response
-            return {'download_time': f'{download_time} sec.',
+            return {'download_time': f'{download_time * 1000} ms.',
                     'avg_latency': f'{avg_latency} ms.',
                     'ttfb': f'{round(ttfb, 3)} sec.',
                     'file_ip': ip_address}
