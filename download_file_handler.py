@@ -10,10 +10,10 @@ class Downloader:
     def __init__(self, file_link: str):
         self.file_link = file_link
 
-    def get_download_info(self):
-        return self.__start_downloading()
+    def get_download_info(self, max_speed: int):
+        return self.__start_downloading(max_speed=max_speed)
 
-    def __start_downloading(self, max_speed: int = 100) -> dict:
+    def __start_downloading(self, max_speed: int) -> dict:
         try:
             # Measure the network latency to the file host before the download
             host = requests.utils.urlparse(self.file_link).hostname
