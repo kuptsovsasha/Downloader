@@ -27,8 +27,8 @@ class Downloader:
             response = requests.get(self.file_link, stream=True)
             file_name = f"download_file_{time.strftime('%Y-%m-%d_%H:%M:%S')}"
 
-            max_speed_in_bytes = max_speed * 125829
-            chunk_size = 8192
+            max_speed_in_bytes = max_speed * 131072
+            chunk_size = 1024 * 1024  # 1MB
             delay = chunk_size / max_speed_in_bytes
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=chunk_size):
