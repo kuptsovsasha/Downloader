@@ -27,9 +27,8 @@ class Downloader:
             response = requests.get(self.file_link, stream=True)
             file_name = f"download_file_{time.strftime('%Y-%m-%d_%H:%M:%S')}"
 
-            max_speed_in_bytes = max_speed * 131072
             chunk_size = 1024 * 1024  # 1MB
-            delay = chunk_size / max_speed_in_bytes
+            delay = self.__get_delay_time(max_speed=max_speed, chunk_size=chunk_size)
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=chunk_size):
                     f.write(chunk)
@@ -51,7 +50,7 @@ class Downloader:
             # Return the download time in a JSON response
             return {'download_time': f'{download_time * 1000}',
                     'avg_latency': f'{avg_latency}',
-                    'ttfb': f'{round(ttfb, 3)}',
+                    'ttfb': f'{round((ttfb * 1000), 3)}',
                     'file_ip': ip_address}
         except (requests.exceptions.RequestException,) as e:
             # Return an error response if there's an exception during the download or network measurement
@@ -64,4 +63,17 @@ class Downloader:
         except Exception as e:
             # Return a generic error response for any other unexpected errors
             return {'error': f'Unexpected error: {type(e).__name__}: {str(e)}'}
+
+    @staticmethod
+    def __get_delay_time(max_speed: int, chunk_size: int):
+        delay_value_mapper = {
+            100: 2.5,
+            200: 2,
+            1000: 0
+        }
+        speed_value = max_speed * delay_value_mapper.get(max_speed)
+        max_speed_in_bytes = speed_value * 131072
+        delay = chunk_size / max_speed_in_bytes if max_speed_in_bytes > 0 else 0
+        return delay
+
 
