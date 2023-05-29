@@ -25,14 +25,11 @@ class Downloader:
             # Download the file and measure the time taken
             start_time = time.time()
             response = requests.get(self.file_link, stream=True)
-            file_name = f"download_file_{time.strftime('%Y-%m-%d_%H:%M:%S')}"
 
             chunk_size = 1024 * 1024  # 1MB
             delay = self.__get_delay_time(max_speed=max_speed, chunk_size=chunk_size)
-            with open(file_name, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    f.write(chunk)
-                    time.sleep(delay)
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                time.sleep(delay)
             download_time = round(time.time() - start_time, 3)
 
             # Measure the network latency to the file host after the download
@@ -43,9 +40,6 @@ class Downloader:
 
             # Measure the time-to-first-byte (TTFB)
             ttfb = response.elapsed.total_seconds()
-
-            # Delete the downloaded file
-            os.remove(file_name)
 
             # Return the download time in a JSON response
             return {'download_time': f'{download_time * 1000}',

@@ -18,3 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire project to the container
 COPY . .
+
+# run entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
