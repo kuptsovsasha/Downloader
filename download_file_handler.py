@@ -61,7 +61,7 @@ class Downloader:
     @staticmethod
     def __get_delay_time(max_speed: int, chunk_size: int):
         delay_value_mapper = {
-            100: 2.5,
+            100: 2,
             200: 2,
             1000: 0
         }
